@@ -1,4 +1,5 @@
 const express = require('express');
+const universalMiddleware = require('./middleware/universalMiddleware');
 
 const app = express();
 
@@ -10,10 +11,13 @@ app.use(express.json());
 app.use(express.static(`${__dirname}/public`));
 
 // use to send time // Testing middleware
-app.use((req, res, next) => {
-    req.requestTime = new Date().toISOString();
-    // console.log(req.headers);
-    next();
+app.use(universalMiddleware.sendTimeStamp);
+
+// Routes
+app.get('/', (req, res) => {
+    res.status(200).json({
+        status: 'ok',
+    });
 });
 
 // app.use('/api/v1/tours', toursRouter);
