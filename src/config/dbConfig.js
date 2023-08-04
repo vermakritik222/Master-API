@@ -1,7 +1,5 @@
-const dotenv = require('dotenv');
-dotenv.config({ path: '../../.env' });
-
 let DB;
+
 if (process.env.NODE_ENV === 'development') {
     DB = process.env.DEV_DATABASE.replace(
         '<PASSWORD>',

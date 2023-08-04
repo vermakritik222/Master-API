@@ -1,6 +1,6 @@
 // const mongoose = require('mongoose');
-require('dotenv'); // for environment veritable
-const dbConfig = require('./config/dbConfig'); // for environment veritable
+require('dotenv').config();
+const dbConfig = require('./config/dbConfig');
 
 const app = require('./app');
 
@@ -10,10 +10,7 @@ const app = require('./app');
 //     process.exit(1);
 // });
 
-// const DB = process.env.DATABASE.replace(
-//     '<PASSWORD>',
-//     process.env.DATABASE_PASSWORD
-// );
+console.log("DB",dbConfig.DB);
 
 // mongoose
 //     .connect(dbConfig.DB, {

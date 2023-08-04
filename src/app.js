@@ -1,5 +1,6 @@
 const express = require('express');
-const universalMiddleware = require('./middleware/universalMiddleware');
+const universalMiddleware = require('./middleware/universalMiddleware'); 
+const musicRouter = require('./routes/musicRouter'); 
 
 const app = express();
 
@@ -20,7 +21,7 @@ app.get('/', (req, res) => {
     });
 });
 
-// app.use('/api/v1/tours', toursRouter);
+app.use('/api/v1/music', musicRouter);
 // app.use('/api/v1/user', userRouter);
 // app.use('/api/v1/reviews', reviewRouter);
 
