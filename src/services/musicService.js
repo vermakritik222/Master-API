@@ -1,8 +1,6 @@
 const fs = require('fs');
 
-exports.streamMusic = (filePath, res) => {
-    const readStream = fs.createReadStream(filePath);
-
+exports.streamFileChunks = (readStream, res) => {
     let isPreloading = true;
     const preloadBuffer = []; // Buffer to hold preloaded chunks
     const preloadChunkSize = 10; // Number of chunks to preload
@@ -34,28 +32,14 @@ exports.streamMusic = (filePath, res) => {
             }
         }
     });
-
-    readStream.on('end', () => {
-        // Send any remaining preloaded chunks
-        preloadBuffer.forEach((preloadChunk) => {
-            res.write(preloadChunk);
-        });
-
-        // Mark the end of the response
-        res.end();
-    });
-
-    // Handle errors
+    
     readStream.on('error', (error) => {
         console.error('Error while streaming audio:', error.message);
         res.status(500).json({ error: 'Internal Server Error' });
     });
 };
 
-exports.sendNormally = (filePath, res) => {
-    //  Create a read stream from the file
-    const readStream = fs.createReadStream(filePath);
-
+exports.streamFileNormally = (readStream, res) => {
     // Pipe the read stream to the response stream
     readStream.pipe(res);
 
@@ -65,5 +49,3 @@ exports.sendNormally = (filePath, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     });
 };
-
-
