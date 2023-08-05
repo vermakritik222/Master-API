@@ -1,4 +1,4 @@
-// const mongoose = require('mongoose');
+const mongoose = require('mongoose');
 require('dotenv').config();
 const dbConfig = require('./config/dbConfig');
 
@@ -10,21 +10,21 @@ const app = require('./app');
 //     process.exit(1);
 // });
 
-console.log("DB",dbConfig.DB);
+console.log('DB', dbConfig.DB);
 
-// mongoose
-//     .connect(dbConfig.DB, {
-//         useNewUrlParser: true,
-//         useCreateIndex: true,
-//         useFindAndModify: false,
-//         useUnifiedTopology: true, // to remove error/ working on consol
-//     })
-//     .then(() => {
-//         console.log('DB is connected to app.....');
-//     })
-//     .catch((err) => {
-//         console.log(`db error ${err.message}`);
-//     });
+mongoose
+    .connect(dbConfig.DB, {
+        useNewUrlParser: true,
+        // useCreateIndex: true,
+        // useFindAndModify: false,
+        useUnifiedTopology: true, // to remove error/ working on consol
+    })
+    .then(() => {
+        console.log('DB is connected to app.....');
+    })
+    .catch((err) => {
+        console.log(`db error ${err.message}`);
+    });
 
 const port = process.env.PORT || 8080;
 const server = app.listen(port, () => {

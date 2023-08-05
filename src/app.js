@@ -1,6 +1,7 @@
 const express = require('express');
-const universalMiddleware = require('./middleware/universalMiddleware'); 
-const musicRouter = require('./routes/musicRouter'); 
+const universalMiddleware = require('./middleware/universalMiddleware');
+const musicRouter = require('./routes/musicRouter');
+const fileRouter = require('./routes/fileUploadRouter');
 
 const app = express();
 
@@ -10,6 +11,14 @@ app.use(express.json());
 
 // Serving static files
 app.use(express.static(`${__dirname}/public`));
+
+// CORS Middleware
+app.use(
+    cors({
+      origin: "*",
+      credentials: true,
+    })
+  );
 
 // use to send time // Testing middleware
 app.use(universalMiddleware.sendTimeStamp);
@@ -22,6 +31,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/v1/music', musicRouter);
+app.use('/api/v1/files', fileRouter);
 // app.use('/api/v1/user', userRouter);
 // app.use('/api/v1/reviews', reviewRouter);
 

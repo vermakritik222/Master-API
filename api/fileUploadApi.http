@@ -1,0 +1,10 @@
+POST  http://localhost:8080/api/v1/files/upload
+Content-Type: application/json
+
+###
+GET  http://localhost:8080/api/v1/files/ab752ede-7a95-4c66-ae3d-f51e0fd21c42
+Content-Type: application/json
+
+###
+GET  http://localhost:8080/api/v1/files/downlode/ab752ede-7a95-4c66-ae3d-f51e0fd21c42
+Content-Type: application/json

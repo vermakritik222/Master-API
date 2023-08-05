@@ -8,7 +8,7 @@ const fileInfo = promisify(fs.stat);
 exports.streamSong = async (req, res) => {
     const { filename } = req.params;
     const filePath = path.join(__dirname, '..', '..', '.', 'public', filename);
-    
+
     const { size } = await fileInfo(filePath);
     const range = req.headers.range;
 
