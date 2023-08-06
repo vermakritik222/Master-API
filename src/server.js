@@ -4,11 +4,11 @@ const dbConfig = require('./config/dbConfig');
 
 const app = require('./app');
 
-// process.on('uncaughtException', (err) => {
-//     console.log(log.danger, 'UNCAUGHT EXCEPTION! 💥 Shutting down...');
-//     console.log(err.name, err.message);
-//     process.exit(1);
-// });
+process.on('uncaughtException', (err) => {
+    console.log(log.danger, 'UNCAUGHT EXCEPTION! 💥 Shutting down...');
+    console.log(err.name, err.message);
+    process.exit(1);
+});
 
 console.log('DB', dbConfig.DB);
 
@@ -31,11 +31,11 @@ const server = app.listen(port, () => {
     console.log(`server is running on ${port} .......`);
 });
 
-// process.on('unhandledRejection', (err) => {
-//     //FIXME: something is wrong
-//     console.log(log.danger, 'UNHANDLED REJECTION! 💥 Shutting down...');
-//     console.log(err.name, err.message);
-//     server.close(() => {
-//         process.exit(1);
-//     });
-// });
+process.on('unhandledRejection', (err) => {
+    //FIXME: something is wrong
+    console.log(log.danger, 'UNHANDLED REJECTION! 💥 Shutting down...');
+    console.log(err.name, err.message);
+    server.close(() => {
+        process.exit(1);
+    });
+});

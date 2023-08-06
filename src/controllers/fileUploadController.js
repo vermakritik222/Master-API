@@ -1,7 +1,9 @@
 const fileUploadService = require('../services/fileUploadService');
 const File = require('../models/fileModel');
+const AppError = require('../utils/appError');
+const catchAsync = require("../utils/chtchasync")
 
-exports.saveFile = async (req, res) => {
+exports.saveFile = catchAsync(async (req, res) => {
     try {
         const fileDetails = await fileUploadService.uploadFile(req);
 
@@ -14,19 +16,15 @@ exports.saveFile = async (req, res) => {
             file: `${process.env.APP_BASE_URL}/files/${response.uuid}`,
         });
     } catch (error) {
-        console.log(error);
-        res.status(500).json({
-            status: 'fail',
-            error: 'Something went wrong.',
-        });
+        return next(new AppError('Something went wrong!'), 500);
     }
-};
+});
 
-exports.downloadLinkGeneration = async (req, res) => {
+exports.downloadLinkGeneration = catchAsync(async (req, res) => {
     try {
         const file = await File.findOne({ uuid: req.params.uuid });
         if (!file) {
-            return res.json({ error: 'Link has been expired.' });
+            return next(new AppError('Link has been expired!'), 500);
         }
         return res.json({
             uuid: file.uuid,
@@ -35,15 +33,15 @@ exports.downloadLinkGeneration = async (req, res) => {
             downloadLink: `${process.env.APP_BASE_URL}/files/download/${file.uuid}`,
         });
     } catch (err) {
-        return res.json({ error: 'something went wrong.' });
+        return next(new AppError('Something went wrong!'), 500);
     }
-};
+});
 
-exports.downloadFile = async (req, res) => {
+exports.downloadFile = catchAsync(async (req, res) => {
     const file = await File.findOne({ uuid: req.params.uuid });
     if (!file) {
-        return res.json({ error: 'Link has been expired' });
+        return next(new AppError('Link has been expired!'), 500);
     }
     const filePath = `${__dirname}/../../${file.path}`;
     res.download(filePath);
-};
+});

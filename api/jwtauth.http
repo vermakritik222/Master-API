@@ -1,0 +1,46 @@
+POST http://localhost:8080/api/v1/jwt/signup
+Content-Type: application/json
+
+{
+    "name":"testuser2",
+    "email":"sdfzv@gmail.com",
+    "password": "test1234",
+    "passwordConformation":"test1234",
+    "role":"user"
+}
+
+###
+POST http://localhost:8080/api/v1/jwt/login
+Content-Type: application/json
+
+{
+    "email":"sdfzv@gmail.com",
+    "password": "newpas123"
+}
+
+###
+POST http://localhost:8080/api/v1/jwt/forgotPassword
+Content-Type: application/json
+
+{
+    "email":"sdfzv@gmail.com"
+}
+
+###
+PATCH   http://localhost:8080/api/v1/jwt/resetPassword/1e66816c1be2e0e11635cf6a7d7f71f5ffb54e2b22863a59780a2128c67fb201
+Content-Type: application/json
+
+{
+    "password":"newpas123",
+    "passwordConformation":"newpas123"
+}
+
+###
+PATCH   http://localhost:8080/api/v1/jwt/updateMyPassword
+Content-Type: application/json
+# eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Y2ZhOWE3MTMwYTcwMmZlYWNlMTFiMSIsImlhdCI6MTY5MTMzMTI1MSwiZXhwIjoxNjk5MTA3MjUxfQ.IPLV2ukdR_odPc266hkrRaW5LdGdMxF5XAmv3LQ8wJA
+
+{
+    "password":"newpas123",
+    "passwordConformation":"newpas123"
+}

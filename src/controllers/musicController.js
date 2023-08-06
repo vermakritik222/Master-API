@@ -2,10 +2,11 @@ const fs = require('fs');
 const path = require('path');
 const { streamFileChunks } = require('../services/musicService');
 const { promisify } = require('util');
+const catchAsync = require("../utils/chtchasync")
 
 const fileInfo = promisify(fs.stat);
 
-exports.streamSong = async (req, res) => {
+exports.streamSong = catchAsync(async (req, res) => {
     const { filename } = req.params;
     const filePath = path.join(__dirname, '..', '..', '.', 'public', filename);
 
@@ -34,4 +35,4 @@ exports.streamSong = async (req, res) => {
         const readStream = fs.createReadStream(filePath).pipe(res);
         streamFileChunks(readStream, res);
     }
-};
+});

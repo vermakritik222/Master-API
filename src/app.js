@@ -1,7 +1,14 @@
 const express = require('express');
+const cors = require('cors');
 const universalMiddleware = require('./middleware/universalMiddleware');
-const musicRouter = require('./routes/musicRouter');
-const fileRouter = require('./routes/fileUploadRouter');
+const healthcheckRoutes = require('./routes/healthcheck.routes');
+const musicRouter = require('./routes/music.routes');
+const fileRouter = require('./routes/fileUpload.routes');
+const hlsStreamRouter = require('./routes/hlsStream.routes');
+const AppError = require('./utils/appError');
+const globalErrorHandler = require('./controllers/errorController');
+const jwtauthRoutes = require('./routes/jwtauth.routes');
+const userRoutes = require('./routes/user.routes');
 
 const app = express();
 
@@ -15,10 +22,10 @@ app.use(express.static(`${__dirname}/public`));
 // CORS Middleware
 app.use(
     cors({
-      origin: "*",
-      credentials: true,
+        origin: '*',
+        credentials: true,
     })
-  );
+);
 
 // use to send time // Testing middleware
 app.use(universalMiddleware.sendTimeStamp);
@@ -30,26 +37,17 @@ app.get('/', (req, res) => {
     });
 });
 
+app.use('/health-check', healthcheckRoutes);
+app.use('/api/v1/', userRoutes);
+app.use('/api/v1/jwt', jwtauthRoutes);
 app.use('/api/v1/music', musicRouter);
 app.use('/api/v1/files', fileRouter);
-// app.use('/api/v1/user', userRouter);
-// app.use('/api/v1/reviews', reviewRouter);
+app.use('/api/v1/hsl', hlsStreamRouter);
 
 app.all('*', (req, res, next) => {
-    // not used in production original apps
-    res.status(404).json({
-        status: 'fail',
-        message: `Can't find ${req.originalUrl} on this server!`,
-    });
-
-    // not a recommended way
-    // const err = new Error(`Can't find ${req.originalUrl} on this server!`);
-    // err.statusCode(404);
-    // err.status('fail');
-
     // best method
-    // next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
+    next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 });
 
-// app.use(globelErrorHandlear);
+app.use(globalErrorHandler);
 module.exports = app;
