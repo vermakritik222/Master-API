@@ -28,6 +28,21 @@ exports.getAll = (Model) =>
         });
     });
 
+// exports.getAllForUser = (Model) =>
+//     catchAsync(async (req, res, next) => {
+//         const filterReviews = { ...field };
+//         const doc = await Model.find(filterReviews);
+
+//         // SENDING RESPONSE
+//         res.status(200).json({
+//             status: 'success',
+//             results: doc.length,
+//             data: {
+//                 data: doc,
+//             },
+//         });
+//     });
+
 exports.getOne = (Model, populateOptions) =>
     catchAsync(async (req, res, next) => {
         let query = Model.findById(req.params.id);

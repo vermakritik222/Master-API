@@ -1,0 +1,27 @@
+GET http://localhost:8080/api/v1/todo
+Content-Type: application/json
+
+###
+POST http://localhost:8080/api/v1/todo
+Content-Type: application/json
+
+{
+    "title": "dsyuff",
+    "description": "test test test test tes te tts",
+    "creator": "hhaftsygzfhdsfyt76fw6stfc6ythshv",
+    "participants": [],
+    "due_date": "1/1/2020",
+    "status": "open"
+}
+
+###
+PATCH  http://localhost:8080/api/v1/todo/64d15a6d7a8ddae1d906eb50
+Content-Type: application/json
+
+{
+    "status": "canceled"
+}
+
+###
+DELETE  http://localhost:8080/api/v1/todo/64d15a6d7a8ddae1d906eb50
+Content-Type: application/json

@@ -10,8 +10,6 @@ process.on('uncaughtException', (err) => {
     process.exit(1);
 });
 
-console.log('DB', dbConfig.DB);
-
 mongoose
     .connect(dbConfig.DB, {
         useNewUrlParser: true,

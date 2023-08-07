@@ -5,19 +5,19 @@ class APIFeatures {
     }
 
     filter() {
-        // 1)  FLITRING
+        // 1)  FILTERING
 
-        const quieryObj = { ...this.queryString };
+        const queryObj = { ...this.queryString };
 
         // console.log(`quieryObj ${quieryObj}`);
 
-        const excludedFildes = ['page', 'sort', 'limit', 'fields'];
+        const excludedFiled = ['page', 'sort', 'limit', 'fields'];
 
-        excludedFildes.forEach((el) => delete quieryObj[el]);
+        excludedFiled.forEach((el) => delete queryObj[el]);
 
-        // 2) ADVANCE FLTRING
+        // 2) ADVANCE FILTERING
 
-        let queryStr = JSON.stringify(quieryObj);
+        let queryStr = JSON.stringify(queryObj);
 
         queryStr = queryStr.replace(
             /\b(gte|gt|lte|lt)\b/g,

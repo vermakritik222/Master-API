@@ -9,6 +9,11 @@ const userSchema = mongoose.Schema(
             type: String,
             required: [true, 'Please tell us your name!!!! '],
         },
+        userName: {
+            type: String,
+            unique: true,
+            required: [true, 'Please tell us your user name!!!! '],
+        },
         email: {
             type: String,
             unique: true,
@@ -22,13 +27,16 @@ const userSchema = mongoose.Schema(
         role: {
             type: String,
             enum: {
-                values: ['user', 'admin', 'guide', 'lead-guide'],
+                values: ['admin', 'sub-admin', 'user', 'none'],
             },
             default: 'user',
         },
+        authorized: {
+            type: Object,
+        },
         password: {
             type: String,
-            required: [true, 'Please creat an password'],
+            required: [true, 'Please create an password'],
             minlength: [6, 'A password must have 6 characters'],
             select: false,
         },
