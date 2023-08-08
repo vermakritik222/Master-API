@@ -1,8 +1,8 @@
 const fs = require('fs');
 const path = require('path');
-const { streamFileChunks } = require('../services/musicService');
+const { streamFileChunks } = require('../../../services/musicService');
 const { promisify } = require('util');
-const catchAsync = require("../utils/chtchasync")
+const catchAsync = require("../../../utils/chtchasync")
 
 const fileInfo = promisify(fs.stat);
 

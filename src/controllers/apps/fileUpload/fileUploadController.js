@@ -1,7 +1,7 @@
-const fileUploadService = require('../services/fileUploadService');
-const File = require('../models/apps/fileUpload/fileModel');
-const AppError = require('../utils/appError');
-const catchAsync = require("../utils/chtchasync")
+const fileUploadService = require('../../../services/fileUploadService');
+const File = require('../../../models/apps/fileUpload/fileModel');
+const AppError = require('../../../utils/appError');
+const catchAsync = require("../../../utils/chtchasync")
 
 exports.saveFile = catchAsync(async (req, res) => {
     try {
