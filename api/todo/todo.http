@@ -1,14 +1,16 @@
 GET http://localhost:8080/api/v1/todo
 Content-Type: application/json
+authorization:Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0ZDE3YTEwZjljNmExOTY5NzVlNDE2YyIsImFjY2VzcyI6WyIvYWxsIiwiL3RvZG8vYWxsIl0sImlhdCI6MTY5MTQ4Mjg0NiwiZXhwIjoxNjk5MjU4ODQ2fQ.NHmfAh0BJZQ3kfIN3uIY9e-pJ9v1ljPKVNBSkBqcvfA
 
 ###
 POST http://localhost:8080/api/v1/todo
 Content-Type: application/json
+authorization:Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0ZDE3YTEwZjljNmExOTY5NzVlNDE2YyIsImFjY2VzcyI6WyIvYWxsIiwiL3RvZG8vYWxsIl0sImlhdCI6MTY5MTQ4Mjg0NiwiZXhwIjoxNjk5MjU4ODQ2fQ.NHmfAh0BJZQ3kfIN3uIY9e-pJ9v1ljPKVNBSkBqcvfA
 
 {
     "title": "dsyuff",
     "description": "test test test test tes te tts",
-    "creator": "hhaftsygzfhdsfyt76fw6stfc6ythshv",
+    "creator": "64d17961eb28bc70e7c7a88c",
     "participants": [],
     "due_date": "1/1/2020",
     "status": "open"

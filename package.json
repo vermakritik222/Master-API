@@ -19,8 +19,8 @@
     "fluent-ffmpeg": "^2.1.2",
     "jsonwebtoken": "^9.0.1",
     "mongoose": "^7.4.1",
-    "mongos": "^0.0.0",
     "multer": "^1.4.5-lts.1",
+    "uuid": "^9.0.0",
     "validator": "^13.11.0"
   },
   "devDependencies": {

@@ -1,0 +1,69 @@
+POST http://localhost:8080/api/v1/jwt/generate-login-token
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0ZDE3YTEwZjljNmExOTY5NzVlNDE2YyIsImFjY2VzcyI6WyIvYWxsIiwiL3RvZG8vYWxsIl0sImlhdCI6MTY5MTQ5Mzg4NCwiZXhwIjoxNjk5MjY5ODg0fQ.2vTooNWjIAoy3S5YTwA3PKyjjJZ9rgUe8X3kBtv0rx8
+
+{
+    "role":"user",
+    "access":["/todo/all","/jwt/all","/ecomerce/all"]
+}
+
+###
+POST http://localhost:8080/api/v1/jwt/signup/b0c7c35d93dd202b6140c5c4d42b6efa57a099dda0dee65ce26b17d43630bfd22789e91d7f0105fd1e4afa5c321e7e771bc2ac7d32458db3af5d7c678a03fb3d6716218771236e0c5eedcb3baeae4db0ef6a38584f2da6ec26298eb7d6f648733a534397ba57d73f2756cb6a72b90361325e6a7a69c9ab595854f654e154ab1ccd632bc5de3d5c09c9a56df7aadfcc0587f698e7f58e03e8ae812bf793149733514560e1af1df5081c48a0886a16eaec
+Content-Type: application/json
+
+{
+    "name":"user",
+    "email":"user@gmail.com",
+    "password": "test1234",
+    "passwordConformation":"test1234",
+    "userName":"user"
+}
+
+###
+POST http://localhost:8080/api/v1/jwt/signup
+Content-Type: application/json
+
+{
+    "name":"test2",
+    "email":"test42@gmail.com",
+    "password": "test1234",
+    "passwordConformation":"test1234",
+    "userName":"test22",
+    "access":["/all","/todo/all"]
+}
+
+###
+POST http://localhost:8080/api/v1/jwt/login
+Content-Type: application/json
+
+{
+     "email":"test@gmail.com",
+     "password": "test1234"
+}
+
+###
+POST http://localhost:8080/api/v1/jwt/forgotPassword
+Content-Type: application/json
+
+{
+    "email":"sdfzv@gmail.com"
+}
+
+###
+PATCH   http://localhost:8080/api/v1/jwt/resetPassword/1e66816c1be2e0e11635cf6a7d7f71f5ffb54e2b22863a59780a2128c67fb201
+Content-Type: application/json
+
+{
+    "password":"newpas123",
+    "passwordConformation":"newpas123"
+}
+
+###
+PATCH   http://localhost:8080/api/v1/jwt/updateMyPassword
+Content-Type: application/json
+# eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Y2ZhOWE3MTMwYTcwMmZlYWNlMTFiMSIsImlhdCI6MTY5MTMzMTI1MSwiZXhwIjoxNjk5MTA3MjUxfQ.IPLV2ukdR_odPc266hkrRaW5LdGdMxF5XAmv3LQ8wJA
+
+{
+    "password":"newpas123",
+    "passwordConformation":"newpas123"
+}

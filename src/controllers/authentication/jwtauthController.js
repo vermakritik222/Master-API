@@ -1,18 +1,20 @@
 const { promisify } = require('util');
 const crypto = require('crypto');
+const { v4: uuidv4 } = require('uuid');
 const jwt = require('jsonwebtoken');
-const User = require('../models/userModel');
-const catchAsync = require('../utils/chtchasync');
-const sendEmail = require('../services/emailService');
-const AppError = require('../utils/appError');
+const User = require('../../models/userModel');
+const catchAsync = require('../../utils/chtchasync');
+const sendEmail = require('../../services/emailService');
+const AppError = require('../../utils/appError');
+const encryptionService = require('../../services/encryptionService');
 
-const signToken = (id) =>
-    jwt.sign({ id }, process.env.JWT_SECRET, {
+const signToken = (data) =>
+    jwt.sign(data, process.env.JWT_SECRET, {
         expiresIn: process.env.JWT_EXPIRES_IN,
     });
 
 const createSendToken = (user, statusCode, res) => {
-    const token = signToken(user._id);
+    const token = signToken({ id: user._id, access: user.access });
 
     const cookieOptions = {
         expires: new Date(
@@ -29,37 +31,85 @@ const createSendToken = (user, statusCode, res) => {
 
     res.status(statusCode).json({
         status: 'success',
+        token_type: 'Bearer',
         token,
     });
 };
 
 exports.signup = catchAsync(async (req, res, next) => {
-    // const newuser = await User.create(req.body);
-    const newuser = await User.create({
+    const organizationId = uuidv4();
+    const newUser = await User.create({
         name: req.body.name,
+        userName: req.body.userName,
         email: req.body.email,
         password: req.body.password,
         passwordConformation: req.body.passwordConformation,
         passwordChangedAt: req.body.passwordChangedAt,
         role: req.body.role,
+        access: ['/all'],
+        organizationId: organizationId,
     });
-    createSendToken(newuser, 201, res);
+    createSendToken(newUser, 201, res);
+});
+
+exports.genOrgUserToken = catchAsync(async (req, res, next) => {
+    const user = req.user;
+    const data = {
+        createdBy: user._id,
+        organizationId: user.organizationId,
+        role: req.body.role,
+        access: req.body.access,
+    };
+
+    if (!req.body.role || !req.body.access) {
+        return next(new AppError('please enter required fields', 400));
+    }
+
+    if (typeof req.body.access !== 'object' && req.body.access.length > 0) {
+        return next(
+            new AppError('please enter required fields in proper formate', 400)
+        );
+    }
+
+    const token = encryptionService.createDataToken(data);
+    const decryptData = encryptionService.decryptDataToken(token);
+
+    res.status(200).json({
+        status: 'success',
+        decryptData,
+        signup_url: `${process.env.APP_BASE_URL}/jwt/signup/${token}`,
+    });
+});
+
+exports.orgSignup = catchAsync(async (req, res, next) => {
+    const token = req.params.token;
+    const decryptData = encryptionService.decryptDataToken(token);
+    const { createdBy, organizationId, role, access } = decryptData;
+    const newUser = await User.create({
+        name: req.body.name,
+        userName: req.body.userName,
+        email: req.body.email,
+        password: req.body.password,
+        passwordConformation: req.body.passwordConformation,
+        passwordChangedAt: req.body.passwordChangedAt,
+        createdBy,
+        role,
+        access,
+        organizationId,
+    });
+    createSendToken(newUser, 201, res);
 });
 
 exports.login = catchAsync(async (req, res, next) => {
-    // const email = req.body.email;
-    //the above thing is writin same an bellow this is colled object destructuring.
     const { email, password } = req.body;
 
     if (!email || !password) {
         return next(new AppError('please enter email and password!', 400));
     }
-    // 2)
+
     const user = await User.findOne({ email }).select('+password');
-    // console.log(user);
 
-    // correctPassword is an instance function awavelable everywear in usear's
-
+    // correctPassword is an instance function available everywhere in user's module
     if (!user || !(await user.correctPassword(password, user.password))) {
         return next(new AppError('Incurrent email or password'));
     }
@@ -76,7 +126,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
         );
     }
     // 2) Generate the random reset token
-    const resetToken = user.creatPasswordResetToken();
+    const resetToken = user.createPasswordResetToken();
     // console.log(resetToken);
     await user.save({ validateBeforeSave: false });
     // 3) send it to user's email
@@ -113,19 +163,19 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
 });
 
 exports.resetPassword = catchAsync(async (req, res, next) => {
-    //1) get the tokent and encript it
-    const hashtoken = crypto
+    //1) get the token and encrypt it
+    const hashToken = crypto
         .createHash('sha256')
         .update(req.params.token)
         .digest('hex');
 
     //2) get the user and velodate exprie of token
     const user = await User.findOne({
-        passwordResetToken: hashtoken,
+        passwordResetToken: hashToken,
         passwordResetExpires: { $gt: Date.now() },
     });
     if (!user) {
-        return next(new AppError('Token is invalied or has expired'));
+        return next(new AppError('Token is invalid or has expired'));
     }
     user.password = req.body.password;
     user.passwordConformation = req.body.passwordConformation;
@@ -152,65 +202,3 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
     // 4)log user in send jwt
     createSendToken(user, 200, res);
 });
-
-exports.protect = catchAsync(async (req, res, next) => {
-    // 1) geting token and check of its there
-    let token;
-    if (
-        req.headers.authorization &&
-        req.headers.authorization.startsWith('Bearer')
-    ) {
-        token = req.headers.authorization.split(' ')[1];
-    }
-    // console.log(token);
-
-    if (!token) {
-        return next(
-            new AppError(
-                'You are not longged in! Pleas log in to get access.',
-                401
-            )
-        );
-    }
-    // 2) verification of token
-    const decode = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-
-    // 3) check if user still exists
-    const freshUser = await User.findById(decode.id);
-    if (!freshUser) {
-        return next(
-            new AppError(
-                'The token belonged to this User is no longer exist.',
-                401
-            )
-        );
-    }
-
-    // 4) check if user changed pas after the token was issued
-    if (freshUser.changedPasswordAfter(decode.iat)) {
-        return next(
-            new AppError(
-                'User has changed there Password! please login again',
-                401
-            )
-        );
-    }
-    // Greant acces to protected rout
-    req.user = freshUser;
-    next();
-});
-
-// as we canot take darect input in midelware function
-exports.restrictTo =
-    (...role) =>
-    (req, res, next) => {
-        if (!role.includes(req.user.role)) {
-            return next(
-                new AppError(
-                    'You do not have peremption to perform this action',
-                    403
-                )
-            );
-        }
-        next();
-    };

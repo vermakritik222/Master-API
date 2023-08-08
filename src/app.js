@@ -14,6 +14,7 @@ const userRoutes = require('./routes/user.routes');
 const AppError = require('./utils/appError');
 // controllers
 const globalErrorHandler = require('./controllers/errorController');
+const authorizeMiddleware = require('./middleware/authorization/authorizeMiddleware');
 
 const app = express();
 
@@ -50,6 +51,10 @@ app.use('/api/v1/', userRoutes);
 
 // auth
 app.use('/api/v1/jwt', jwtauthRoutes);
+
+// apps Authorization Middleware
+app.use(authorizeMiddleware.protect)
+app.use(authorizeMiddleware.restrictToUrl)
 
 // apps
 app.use('/api/v1/todo', todoRoutes);

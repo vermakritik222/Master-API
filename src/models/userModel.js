@@ -24,15 +24,25 @@ const userSchema = mongoose.Schema(
         photo: {
             type: String,
         },
+        organizationId: {
+            type: String,
+            required: true,
+        },
         role: {
             type: String,
             enum: {
                 values: ['admin', 'sub-admin', 'user', 'none'],
             },
-            default: 'user',
+            default: 'admin',
         },
         authorized: {
-            type: Object,
+            type: Boolean,
+            default: false,
+        },
+        access: [{ type: Object }],
+        createdBy: {
+            type: mongoose.Schema.Types.ObjectId,
+            default: null,
         },
         password: {
             type: String,
@@ -107,7 +117,7 @@ userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
     return false;
 };
 
-userSchema.methods.creatPasswordResetToken = function () {
+userSchema.methods.createPasswordResetToken = function () {
     const resetToken = crypto.randomBytes(32).toString('hex'); // hex convert number to hexadesimal
 
     // sha256 is an algorithms to has resetToken
