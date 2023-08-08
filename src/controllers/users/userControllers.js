@@ -1,7 +1,7 @@
-const User = require('../models/userModel');
-const catchAsync = require('../utils/chtchasync');
-const AppError = require('../utils/appError');
-const handlerFactory = require('../services/handlerFactoryService');
+const User = require('../../models/users/userModel');
+const catchAsync = require('../../utils/chtchasync');
+const AppError = require('../../utils/appError');
+const handlerFactory = require('../../services/handlerFactoryService');
 
 exports.deleteMe = catchAsync(async (req, res, next) => {
     const user = await User.findByIdAndUpdate(req.user.id, { active: false });

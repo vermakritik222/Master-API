@@ -4,12 +4,12 @@ const cors = require('cors');
 const universalMiddleware = require('./middleware/universalMiddleware');
 // routes
 const healthcheckRoutes = require('./routes/healthcheck.routes');
-const musicRouter = require('./routes/music.routes');
-const fileRouter = require('./routes/fileUpload.routes');
-const hlsStreamRouter = require('./routes/hlsStream.routes');
-const jwtauthRoutes = require('./routes/jwtauth.routes');
+const musicRouter = require('./routes/apps/musicStreaming/music.routes');
+const fileRouter = require('./routes/apps/fileUpload/fileUpload.routes');
+const hlsStreamRouter = require('./routes/apps/musicStreaming/hlsStream.routes');
+const jwtauthRoutes = require('./routes/authentication/jwtauth.routes');
 const todoRoutes = require('./routes/apps/todo/todo.routes');
-const userRoutes = require('./routes/user.routes');
+const userRoutes = require('./routes/users/user.routes');
 // utils
 const AppError = require('./utils/appError');
 // controllers
