@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../../models/users/userModel');
 const catchAsync = require('../../utils/chtchasync');
 const AppError = require('../../utils/appError');
+const tokenService = require('../../services/tokenService');
 
 exports.protect = catchAsync(async (req, res, next) => {
     // 1) getting token and check of its there
@@ -23,7 +24,10 @@ exports.protect = catchAsync(async (req, res, next) => {
         );
     }
     // 2) verification of token
-    const decode = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+    const decode = await promisify(jwt.verify)(
+        token,
+        process.env.JWT_ACCESS_TOKEN_SECRET
+    );
 
     // 3) check if user still exists
     const freshUser = await User.findById(decode.id);
@@ -67,6 +71,26 @@ exports.restrictToUrl = (req, res, next) => {
     );
 };
 
+exports.saveMe = async (req, res, next) => {
+    try {
+        const { accessToken } = req.cookies;
+        if (!accessToken) {
+            console.log('Error');
+            throw new Error();
+        }
+        console.log('accessToken', accessToken);
+        const userData = await tokenService.verifyAccessToken(accessToken);
+        console.log('userData', userData);
+        if (!userData) {
+            console.log(' userData Error');
+            throw new Error();
+        }
+        req.user = userData;
+        next();
+    } catch (err) {
+        res.status(401).json({ message: 'Invalid token' });
+    }
+};
 
 // as we can't take direct input in middleware function
 exports.restrictToRole =

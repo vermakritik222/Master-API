@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 const dbConfig = require('./config/dbConfig');
 
-const app = require('./app');
+const server = require('./app');
 
 process.on('uncaughtException', (err) => {
     console.log(log.danger, 'UNCAUGHT EXCEPTION! 💥 Shutting down...');
@@ -25,15 +25,15 @@ mongoose
     });
 
 const port = process.env.PORT || 8080;
-const server = app.listen(port, () => {
+const serverInstance = server.listen(port, () => {
     console.log(`server is running on ${port} .......`);
 });
 
 process.on('unhandledRejection', (err) => {
     //FIXME: something is wrong
-    console.log(log.danger, 'UNHANDLED REJECTION! 💥 Shutting down...');
+    console.log('UNHANDLED REJECTION! 💥 Shutting down...');
     console.log(err.name, err.message);
-    server.close(() => {
+    serverInstance.close(() => {
         process.exit(1);
     });
 });

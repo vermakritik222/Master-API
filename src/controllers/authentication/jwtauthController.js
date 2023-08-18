@@ -9,7 +9,7 @@ const AppError = require('../../utils/appError');
 const encryptionService = require('../../services/encryptionService');
 
 const signToken = (data) =>
-    jwt.sign(data, process.env.JWT_SECRET, {
+    jwt.sign(data, process.env.JWT_ACCESS_TOKEN_SECRET, {
         expiresIn: process.env.JWT_EXPIRES_IN,
     });
 
