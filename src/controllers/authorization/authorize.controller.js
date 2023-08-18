@@ -22,7 +22,7 @@ exports.activate = async (req, res) => {
         const jimResp = await Jimp.read(buffer);
         jimResp
             .resize(150, Jimp.AUTO)
-            .write(path.resolve(__dirname, `../storage/${imagePath}`));
+            .write(path.resolve(__dirname, `../../../uploads/${imagePath}`));
     } catch (err) {
         res.status(500).json({ message: 'Could not process the image' });
     }
@@ -36,7 +36,7 @@ exports.activate = async (req, res) => {
         }
         user.activated = true;
         user.name = name;
-        user.avatar = `/storage/${imagePath}`;
+        user.avatar = `/uploads/${imagePath}`;
         user.save();
         res.json({ user, auth: true });
     } catch (err) {

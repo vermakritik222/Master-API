@@ -27,7 +27,7 @@ const server = http.createServer(app);
 
 app.use(cookieParser());
 
-app.use(express.json({ limit: '10kb' }));
+app.use(express.json({ limit: '8mb' }));
 app.use(express.json());
 
 // Serving static files

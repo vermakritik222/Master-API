@@ -1,6 +1,6 @@
 const express = require('express');
 const authController = require('../../../controllers/authentication/phoneAuth.controller');
-const activateController = require('../../../controllers/authorization/authorizeController');
+const activateController = require('../../../controllers/authorization/authorize.controller');
 const roomsController = require('../../../controllers/apps/voiceChat/rooms.controller');
 const {
     saveMe,
