@@ -169,7 +169,7 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
         .update(req.params.token)
         .digest('hex');
 
-    //2) get the user and velodate exprie of token
+    //2) get the user and validate expire of token
     const user = await User.findOne({
         passwordResetToken: hashToken,
         passwordResetExpires: { $gt: Date.now() },
