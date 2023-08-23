@@ -7,26 +7,37 @@ const userSchema = mongoose.Schema(
     {
         name: {
             type: String,
-            required: [true, 'Please tell us your name!!!! '],
+            required: [false, 'Please tell us your name!!!! '],
         },
-        userName: {
-            type: String,
-            unique: true,
-            required: [true, 'Please tell us your user name!!!! '],
-        },
+        phone: { type: String, required: true },
+        // userName: {
+        //     type: String,
+        //     // unique: true,
+        //     required: [false, 'Please tell us your user name!!!! '],
+        // },
         email: {
             type: String,
-            unique: true,
+            // unique: true,
             lowercase: true,
-            require: [true, 'enter an email'],
+            required: [false, 'enter an email'],
             validate: [validator.isEmail, 'Please provide a valid email'],
         },
         photo: {
             type: String,
         },
+        avatar: {
+            type: String,
+            required: false,
+            get: (avatar) => {
+                if (avatar) {
+                    return `${process.env.BASE_URL}${avatar}`;
+                }
+                return avatar;
+            },
+        },
         organizationId: {
             type: String,
-            required: true,
+            required: false,
         },
         role: {
             type: String,
@@ -46,13 +57,13 @@ const userSchema = mongoose.Schema(
         },
         password: {
             type: String,
-            required: [true, 'Please create an password'],
+            required: [false, 'Please create an password'],
             minlength: [6, 'A password must have 6 characters'],
             select: false,
         },
         passwordConformation: {
             type: String,
-            required: [true, 'Please confirm your password'],
+            required: [false, 'Please confirm your password'],
             validate: {
                 validator: function (el) {
                     return el === this.password;
@@ -63,13 +74,19 @@ const userSchema = mongoose.Schema(
         passwordChangedAt: Date,
         passwordResetToken: String,
         passwordResetExpires: Date,
-        active: {
+        activated: {
             type: Boolean,
-            default: true,
+            default: false,
+            // select: false,
+        },
+        idDeleted: {
+            type: Boolean,
+            default: false,
             select: false,
         },
     },
     {
+        timestamps: true,
         toJSON: { virtuals: true },
         toObject: { virtuals: true },
     }

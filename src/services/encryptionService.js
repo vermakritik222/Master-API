@@ -13,11 +13,21 @@ exports.createDataToken = (data) => {
 
 exports.decryptDataToken = (token) => {
     // Decrypt the data
-    const decipher = crypto.createDecipher('aes-256-cbc', process.env.TOKEN_SECRET);
+    const decipher = crypto.createDecipher(
+        'aes-256-cbc',
+        process.env.TOKEN_SECRET
+    );
 
     // Decrypt the encrypted data
     let decryptedData = decipher.update(token, 'hex', 'utf-8');
     decryptedData += decipher.final('utf-8');
 
     return JSON.parse(decryptedData);
+};
+
+exports.hash256 = (data) => {
+    return crypto
+        .createHmac('sha256', process.env.HASH_SECRET)
+        .update(data)
+        .digest('hex');
 };
