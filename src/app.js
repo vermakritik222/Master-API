@@ -5,10 +5,13 @@ const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
-const rateLimit = require('ratelimit');
+const { rateLimit } = require('express-rate-limit');
 const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
 const xssClean = require('xss-clean');
+const YAML = require('yaml');
+const swaggerUi = require('swagger-ui-express');
+
 // sockets
 const voiceSocket = require('./socket/voiceChat.socket');
 // middleware
@@ -25,7 +28,10 @@ const userRoutes = require('./routes/users/user.routes');
 const AppError = require('./utils/appError');
 // controllers
 const globalErrorHandler = require('./controllers/errorController');
-const authorizeMiddleware = require('./middleware/authorization/authorizeMiddleware');
+// const authorizeMiddleware = require('./middleware/authorization/authorizeMiddleware');
+
+const file = fs.readFileSync(path.resolve(__dirname, './swagger.yaml'), 'utf8');
+const swaggerDocument = YAML.parse(file);
 
 const app = express();
 
@@ -79,12 +85,13 @@ voiceSocket(server);
 
 // limiting IP address
 const limiter = rateLimit({
-    max: 100,
     windowMs: 60 * 60 * 1000,
-    message: 'Too many request from this IP, pleas try again in an houre',
+    max: 500,
+    message: `There are too many requests. You are only allowed ${
+        options.max
+    } requests per ${options.windowMs / 60000} minutes`,
 });
-// FIXME:
-// app.use('/api/*', limiter);
+app.use(limiter);
 
 // Routes
 app.get('/', (req, res) => {
@@ -93,8 +100,20 @@ app.get('/', (req, res) => {
     });
 });
 
+// API DOCS
+app.use(
+    '/doc',
+    swaggerUi.serve,
+    swaggerUi.setup(swaggerDocument, {
+        swaggerOptions: {
+            docExpansion: 'none',
+        },
+        customSiteTitle: 'API docs',
+    })
+);
+
 // health check
-app.use('/health-check', healthcheckRoutes);
+app.use('/api/v1/health-check', healthcheckRoutes);
 
 // admin
 app.use('/api/v1/', userRoutes);
@@ -106,8 +125,8 @@ app.use('/api/v1/jwt', jwtauthRoutes);
 app.use('/api/v1/voice-chat', voiceChatRoutes);
 
 // apps Authorization Middleware
-app.use(authorizeMiddleware.protect);
-app.use(authorizeMiddleware.restrictToUrl);
+// app.use(authorizeMiddleware.protect);
+// app.use(authorizeMiddleware.restrictToUrl);
 
 // apps
 app.use('/api/v1/todo', todoRoutes);

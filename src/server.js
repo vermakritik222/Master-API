@@ -15,7 +15,7 @@ mongoose
         useNewUrlParser: true,
         // useCreateIndex: true,
         // useFindAndModify: false,
-        useUnifiedTopology: true, // to remove error/ working on consol
+        useUnifiedTopology: true,
     })
     .then(() => {
         console.log('DB is connected to app.....');
@@ -30,7 +30,6 @@ const serverInstance = server.listen(port, () => {
 });
 
 process.on('unhandledRejection', (err) => {
-    //FIXME: something is wrong
     console.log('UNHANDLED REJECTION! 💥 Shutting down...');
     console.log(err.name, err.message);
     serverInstance.close(() => {

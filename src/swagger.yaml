@@ -1,0 +1,78 @@
+openapi: 3.0.3
+info:
+  title: API
+  description: >-
+    #
+
+  version: 1.0.0
+  contact: {}
+servers:
+  - url: 'http://localhost:8080/api/v1'
+paths:
+  /health-check:
+    get:
+      summary: healthcheck
+      description: >-
+        This API endpoint is commonly used to determine the health status or
+        availability of a system or service.
+      operationId: healthcheck
+      responses:
+        '200':
+          description: healthcheck
+          headers:
+            Access-Control-Allow-Credentials:
+              schema:
+                type: string
+                example: 'true'
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+                example: '*'
+            Connection:
+              schema:
+                type: string
+                example: keep-alive
+            Content-Length:
+              schema:
+                type: string
+                example: '77'
+            Date:
+              schema:
+                type: string
+                example: Thu, 01 Jun 2023 05:43:54 GMT
+            ETag:
+              schema:
+                type: string
+                example: W/"4d-HsIML77lP0nFnY+in7vJJjHcLbQ"
+            Keep-Alive:
+              schema:
+                type: string
+                example: timeout=5
+            X-Powered-By:
+              schema:
+                type: string
+                example: Express
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: string
+                    example: OK
+                  message:
+                    type: string
+                    example: Health check passed
+                  statusCode:
+                    type: number
+                    example: 200
+                  success:
+                    type: boolean
+                    example: true
+              examples:
+                healthcheck:
+                  value:
+                    data: OK
+                    message: Health check passed
+                    statusCode: 200
+                    success: true
