@@ -16,19 +16,17 @@ const swaggerUi = require('swagger-ui-express');
 const voiceSocket = require('./socket/voiceChat.socket');
 // middleware
 const universalMiddleware = require('./middleware/universalMiddleware');
+const authorizeMiddleware = require('./middleware/authorize.middleware');
 // routes
 const healthcheckRoutes = require('./routes/healthcheck.routes');
-const musicRouter = require('./routes/apps/musicStreaming/music.routes');
-const fileRouter = require('./routes/apps/fileUpload/fileUpload.routes');
-const voiceChatRoutes = require('./routes/apps/voiceChat/voiceChat.routes');
-const jwtauthRoutes = require('./routes/authentication/jwtauth.routes');
-const todoRoutes = require('./routes/apps/todo/todo.routes');
-const userRoutes = require('./routes/users/user.routes');
+const authRouter = require('./routes/auth.routes');
+const userRoutes = require('./routes/user.routes'); 
+const roomsRoutes = require('./routes/rooms.routes');
+
 // utils
 const AppError = require('./utils/appError');
 // controllers
 const globalErrorHandler = require('./controllers/errorController');
-// const authorizeMiddleware = require('./middleware/authorization/authorizeMiddleware');
 
 const file = fs.readFileSync(path.resolve(__dirname, './swagger.yaml'), 'utf8');
 const swaggerDocument = YAML.parse(file);
@@ -87,9 +85,7 @@ voiceSocket(server);
 const limiter = rateLimit({
     windowMs: 60 * 60 * 1000,
     max: 500,
-    message: `There are too many requests. You are only allowed ${
-        options.max
-    } requests per ${options.windowMs / 60000} minutes`,
+    message: `There are too many requests. You are only allowed`,
 });
 app.use(limiter);
 
@@ -115,23 +111,16 @@ app.use(
 // health check
 app.use('/api/v1/health-check', healthcheckRoutes);
 
-// admin
-app.use('/api/v1/', userRoutes);
+// Routes
+app.use('/api/v1/auth', authRouter);
 
-// auth
-app.use('/api/v1/jwt', jwtauthRoutes);
+app.use(authorizeMiddleware.protect);
+
+app.use('/api/v1/me', userRoutes);
 
 // temp
-app.use('/api/v1/voice-chat', voiceChatRoutes);
+app.use('/api/v1/rooms', roomsRoutes);
 
-// apps Authorization Middleware
-// app.use(authorizeMiddleware.protect);
-// app.use(authorizeMiddleware.restrictToUrl);
-
-// apps
-app.use('/api/v1/todo', todoRoutes);
-app.use('/api/v1/music', musicRouter);
-app.use('/api/v1/files', fileRouter);
 
 app.all('*', (req, res, next) => {
     next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));

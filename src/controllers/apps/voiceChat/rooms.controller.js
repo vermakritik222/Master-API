@@ -19,7 +19,7 @@ exports.create = async (req, res) => {
     return res.json(room);
 };
 
-exports.index = async (req, res) => {
+exports.getAll = async (req, res) => {
     const rooms = await RoomModel.find({ roomType: { $in: ['open'] } })
         .populate('speakers')
         .populate('ownerId')
@@ -27,7 +27,7 @@ exports.index = async (req, res) => {
     return res.json(rooms);
 };
 
-exports.show = async (req, res) => {
+exports.getOne = async (req, res) => {
     const room = await handlerFactoryService.find(RoomModel, {
         _id: req.params.roomId,
     });
